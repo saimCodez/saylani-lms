@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: #f1f5f9;
+            color: #1e293b;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: #0f172a;
+            color: white;
+            padding: 0;
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-brand {
+            padding: 28px 24px 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .sidebar-brand h2 {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            color: #f8fafc;
+        }
+
+        .sidebar-brand span {
+            font-size: 11px;
+            font-weight: 500;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .menu {
+            list-style: none;
+            padding: 16px 12px;
+            flex: 1;
+        }
+
+        .menu-label {
+            font-size: 10px;
+            font-weight: 600;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            padding: 16px 12px 8px;
+        }
+
+        .menu li {
+            margin-bottom: 2px;
+        }
+
+        .menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: #94a3b8;
+            padding: 11px 14px;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .menu a:hover {
+            background: rgba(255,255,255,0.06);
+            color: #e2e8f0;
+        }
+
+        .menu a.active {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            color: white;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .menu a svg {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-footer {
+            padding: 16px 12px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .sidebar-footer a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: #64748b;
+            padding: 11px 14px;
+            border-radius: 10px;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .sidebar-footer a:hover {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        .sidebar-footer a svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Main Content */
+        .main {
+            margin-left: 260px;
+            width: calc(100% - 260px);
+            padding: 0;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 32px;
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .topbar-left h1 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #0f172a;
+            letter-spacing: -0.3px;
+        }
+
+        .topbar-left p {
+            font-size: 13px;
+            color: #64748b;
+            margin-top: 2px;
+        }
+
+        .admin-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 8px 16px;
+            border-radius: 50px;
+        }
+
+        .admin-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .admin-avatar svg {
+            width: 16px;
+            height: 16px;
+            color: white;
+        }
+
+        .admin-badge span {
+            font-size: 13px;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        .content-area {
+            padding: 28px 32px;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 28px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 24px;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+        }
+
+        .stat-card.blue::before { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+        .stat-card.emerald::before { background: linear-gradient(90deg, #10b981, #34d399); }
+        .stat-card.violet::before { background: linear-gradient(90deg, #8b5cf6, #a78bfa); }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+        }
+
+        .stat-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .stat-card-header h3 {
+            font-size: 13px;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stat-icon.blue { background: #eff6ff; color: #3b82f6; }
+        .stat-icon.emerald { background: #ecfdf5; color: #10b981; }
+        .stat-icon.violet { background: #f5f3ff; color: #8b5cf6; }
+
+        .stat-icon svg { width: 20px; height: 20px; }
+
+        .stat-number {
+            font-size: 32px;
+            font-weight: 800;
+            color: #0f172a;
+            letter-spacing: -1px;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-trend {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 20px;
+        }
+
+        .stat-trend.up {
+            color: #059669;
+            background: #ecfdf5;
+        }
+
+        .stat-trend svg { width: 12px; height: 12px; }
+
+        /* Table */
+        .table-box {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .table-header h2 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .table-header .count-badge {
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead tr {
+            background: #f8fafc;
+        }
+
+        th {
+            padding: 12px 24px;
+            text-align: left;
+            font-size: 11px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        td {
+            padding: 14px 24px;
+            font-size: 14px;
+            border-bottom: 1px solid #f1f5f9;
+            color: #334155;
+        }
+
+        tbody tr {
+            transition: background 0.15s ease;
+        }
+
+        tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .student-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .student-avatar-sm {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+            color: #4f46e5;
+        }
+
+        .student-name-text {
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        .student-email-text {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        .course-tag {
+            display: inline-block;
+            padding: 4px 10px;
+            background: #f0fdf4;
+            color: #15803d;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status.active {
+            background: #ecfdf5;
+            color: #059669;
+        }
+
+        .status.active::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #10b981;
+        }
+
+        /* Responsive */
+        @media (max-width: 1100px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+                z-index: 100;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .topbar {
+                padding: 16px 20px;
+            }
+
+            .content-area {
+                padding: 20px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .mobile-toggle {
+                display: flex !important;
+            }
+
+            .table-box {
+                overflow-x: auto;
+            }
+
+            table {
+                min-width: 600px;
+            }
+        }
+
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: #334155;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+        }
+
+        .mobile-toggle:hover {
+            background: #f1f5f9;
+        }
+
+        .mobile-toggle svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        .mobile-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 99;
+        }
+
+        .mobile-overlay.show {
+            display: block;
+        }
+    </style>
+    <link rel="stylesheet" href="../ui-polish.css">
+</head>
+
+<body>
+    <div class="dashboard">
+        <div class="mobile-overlay" id="mobileOverlay" onclick="toggleSidebar()"></div>
+
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <h2>SMIT Portal</h2>
+                <span>Admin Panel</span>
+            </div>
+
+            <ul class="menu">
+                <li class="menu-label">Main</li>
+                <li>
+                    <a href="#" class="active">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+                        Dashboard
+                    </a>
+                </li>
+
+                <li class="menu-label">Management</li>
+                <li>
+                    <a href="./students.html">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        Students
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg>
+                        Teachers
+                    </a>
+                </li>
+
+                <li>
+                    <a href="./courses.html">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"/></svg>
+                        Courses
+                    </a>
+                </li>
+
+                <li>
+                    <a href="./quiz.html">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M15 2H9a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1Z"/><path d="m9 14 2 2 4-4"/></svg>
+                        Quizzes
+                    </a>
+                </li>
+
+                <li class="menu-label">Insights</li>
+                <li>
+                    <a href="#">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M7 16h8"/><path d="M7 11h12"/><path d="M7 6h3"/></svg>
+                        Reports
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                        Settings
+                    </a>
+                </li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <a href="#">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+                    Logout
+                </a>
+            </div>
+        </aside>
+
+        <main class="main">
+            <div class="topbar">
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <button class="mobile-toggle" onclick="toggleSidebar()">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+                    </button>
+                    <div class="topbar-left">
+                        <h1>Dashboard</h1>
+                        <p>Welcome back, Admin</p>
+                    </div>
+                </div>
+                <div class="admin-badge">
+                    <div class="admin-avatar">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    </div>
+                    <span>Admin</span>
+                </div>
+            </div>
+
+            <div class="content-area">
+                <section class="stats-grid">
+                    <div class="stat-card blue">
+                        <div class="stat-card-header">
+                            <h3>Total Students</h3>
+                            <div class="stat-icon blue">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            </div>
+                        </div>
+                        <div class="stat-number" id="totalstd">0</div>
+                        <span class="stat-trend up">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+                            12% this month
+                        </span>
+                    </div>
+
+                    <div class="stat-card emerald">
+                        <div class="stat-card-header">
+                            <h3>Total Courses</h3>
+                            <div class="stat-icon emerald">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20"/></svg>
+                            </div>
+                        </div>
+                        <div class="stat-number" id="totalCourse">0</div>
+                        <span class="stat-trend up">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+                            5% this month
+                        </span>
+                    </div>
+
+                    <div class="stat-card violet">
+                        <div class="stat-card-header">
+                            <h3>Total Quizzes</h3>
+                            <div class="stat-icon violet">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M15 2H9a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V3a1 1 0 0 0-1-1Z"/><path d="m9 14 2 2 4-4"/></svg>
+                            </div>
+                        </div>
+                        <div class="stat-number" id="totalQuiz">0</div>
+                        <span class="stat-trend up">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+                            8% this month
+                        </span>
+                    </div>
+                </section>
+
+                <section class="table-box">
+                    <div class="table-header">
+                        <h2>Recent Students</h2>
+                        <span class="count-badge">Latest</span>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Course</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="student-info">
+                                        <div class="student-avatar-sm">AA</div>
+                                        <span class="student-name-text">Ali Ahmed</span>
+                                    </div>
+                                </td>
+                                <td style="color:#64748b">ali@gmail.com</td>
+                                <td><span class="course-tag">MERN Stack</span></td>
+                                <td><span class="status active">Active</span></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="student-info">
+                                        <div class="student-avatar-sm">UK</div>
+                                        <span class="student-name-text">Usman Khan</span>
+                                    </div>
+                                </td>
+                                <td style="color:#64748b">usman@gmail.com</td>
+                                <td><span class="course-tag">React JS</span></td>
+                                <td><span class="status active">Active</span></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="student-info">
+                                        <div class="student-avatar-sm">HR</div>
+                                        <span class="student-name-text">Hassan Raza</span>
+                                    </div>
+                                </td>
+                                <td style="color:#64748b">hassan@gmail.com</td>
+                                <td><span class="course-tag">Flutter</span></td>
+                                <td><span class="status active">Active</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('mobileOverlay').classList.toggle('show');
+        }
+    </script>
+
+    <script src="https://www.gstatic.com/firebasejs/12.16.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/12.16.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/12.16.0/firebase-database-compat.js"></script>
+
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyD154DKlJKJ_ok1ig17V-na7LvUWBa3V0E",
+        authDomain: "quiz-app-69264.firebaseapp.com",
+        databaseURL: "https://quiz-app-69264-default-rtdb.firebaseio.com",
+        projectId: "quiz-app-69264",
+        storageBucket: "quiz-app-69264.firebasestorage.app",
+        messagingSenderId: "439853114863",
+        appId: "1:439853114863:web:07f05c1e30ac016851821a",
+      };
+      firebase.initializeApp(firebaseConfig);
+    </script>
+
+    <script src="dashboard.js"></script>
+</body>
+
+</html>

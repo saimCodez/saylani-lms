@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #quizList{
+            width: 600px;
+            margin: auto;
+            display: flex;
+            flex-wrap: wrap;
+            text-align: center;
+
+        }
+        .card{
+            width: 150px;
+            height: 100px;
+            background-color:blueviolet;
+            margin: 20px;
+            padding-top: 20px;
+        }
+    </style>
+    <link rel="stylesheet" href="../ui-polish.css">
+</head>
+<body>
+    
+<h1>Welcome Dashboard</h1>
+
+<div id="quizList"></div>
+
+
+
+
+
+
+   <script src="https://www.gstatic.com/firebasejs/12.16.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/12.16.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/12.16.0/firebase-database-compat.js"></script>
+
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyD154DKlJKJ_ok1ig17V-na7LvUWBa3V0E",
+        authDomain: "quiz-app-69264.firebaseapp.com",
+        databaseURL: "https://quiz-app-69264-default-rtdb.firebaseio.com",
+        projectId: "quiz-app-69264",
+        storageBucket: "quiz-app-69264.firebasestorage.app",
+        messagingSenderId: "439853114863",
+        appId: "1:439853114863:web:07f05c1e30ac016851821a",
+      };
+      firebase.initializeApp(firebaseConfig);
+    </script>
+
+<script src="QuizView.js">
+
+</script>
+
+</body>
+</html>
